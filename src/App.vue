@@ -3,6 +3,10 @@
     <h1 class="heading">青岛旅游地图</h1>
     <div class="aside">
       <div class="com">
+        <p class="title">青岛热门景点</p>
+        <a v-for="n in pop" :href="n.href">{{n.add}}</a>
+      </div>
+      <div class="com">
         <p class="title">青岛旅游工具</p>
         <a v-for="n in tool" :href="n.href">{{n.fun}}</a>
       </div>
@@ -63,10 +67,6 @@
           <bm-driving v-if="car" :start="startC" :end="endC" startCity="青岛" endCity="青岛" :auto-viewport="true" :selectFirstResult="true"></bm-driving></bm-driving>
           <bm-walking v-if="walk" :start="startW" :end="endW" :auto-viewport="true" :selectFirstResult="true"></bm-walking>
         </baidu-map>
-      </div>
-      <div class="com">
-        <p class="title">青岛热门景点</p>
-        <a v-for="n in pop" :href="n.href">{{n.add}}</a>
       </div>
     </div>
     <div class="aside">
