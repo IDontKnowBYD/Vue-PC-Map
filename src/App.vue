@@ -1,40 +1,76 @@
 <template>
   <div id="app">
     <h1 class="heading">青岛旅游地图</h1>
+    <div class="aside">
+      <div class="com">
+        <p class="title">青岛旅游工具</p>
+        <a v-for="n in tool" :href="n.href">{{n.fun}}</a>
+      </div>
+      <div class="com">
+        <p class="title">青岛旅游预订</p>
+        <a v-for="n in books" :href="n.href">{{n.book}}</a>
+      </div>
+      <div class="com">
+        <p class="title">青岛旅游指南</p>
+        <a v-for="n in guides" :href="n.href">{{n.guide}}</a>
+      </div>
+    </div>
     <div class="container">
       <div class="soform">
         <div id="stop">
           <a v-on:click="fchs(0)" :class="{ st: search }">搜索</a>
           <a v-on:click="fchs(1)" :class="{ st: bus }">公交</a>
           <a v-on:click="fchs(2)" :class="{ st: car }">驾驶</a>
-          <a v-on:click="fchs(3)" :class="{ st: around }">周边</a>
+          <a v-on:click="fchs(3)" :class="{ st: walk }">步行</a>
         </div>
         <div id="sfoot">
           <div v-if="search">
-            <p>0</p>
+            <input type="text" v-model="keySearch">
+            <button v-on:click="searchAtt()">查找</button>
           </div>
           <div v-if="bus">
-            <p>1</p>
+            <span>从</span>
+            <input type="text" v-model="staBus">
+            <span>到</span>
+            <input type="text" v-model="endBus">
+            <button v-on:click="searchBus()">查找</button>
           </div>
           <div v-if="car">
-            <p>2</p>
+            <span>从</span>
+            <input type="text" v-model="staCar">
+            <span>到</span>
+            <input type="text" v-model="endCar">
+            <button v-on:click="searchCar()">查找</button>
           </div>
-          <div v-if="around">
-            <p>3</p>
+          <div v-if="walk">
+            <span>从</span>
+            <input type="text" v-model="staWalk">
+            <span>到</span>
+            <input type="text" v-model="endWalk">
+            <button v-on:click="searchWalk()">查找</button>
           </div>
         </div>
       </div>
       <div class="com">
         <p class="title">青岛旅游地图</p>
-        <baidu-map class="bm-view" center="青岛" mapType="BMAP_HYBRID_MAP">
-      
-      
+        <baidu-map center="青岛" mapType="BMAP_HYBRID_MAP">
+          <bm-view class="map"></bm-view>
+          <bm-scale anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-scale>
+          <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
+          <bm-panorama></bm-panorama>
+          <bm-local-search v-if="search" :keyword="keyword" :auto-viewport="true"></bm-local-search>
+          <bm-transit v-if="bus" :start="startB" :end="endB" :auto-viewport="true" :selectFirstResult="true"></bm-transit>
+          <bm-driving v-if="car" :start="startC" :end="endC" startCity="青岛" endCity="青岛" :auto-viewport="true" :selectFirstResult="true"></bm-driving></bm-driving>
+          <bm-walking v-if="walk" :start="startW" :end="endW" :auto-viewport="true" :selectFirstResult="true"></bm-walking>
         </baidu-map>
       </div>
       <div class="com">
         <p class="title">青岛热门景点</p>
         <a v-for="n in pop" :href="n.href">{{n.add}}</a>
       </div>
+    </div>
+    <div class="aside">
+
     </div>
   </div>
 </template>
@@ -45,57 +81,156 @@ export default {
       search: true,
       bus: false,
       car: false,
-      around: false,
+      walk: false,
+      keySearch: '',
+      keyword: '',
+      staBus: '',
+      endBus: '',
+      staCar: '',
+      endCar: '',
+      staWalk: '',
+      endWalk: '',
+      startB: '',
+      startC: '',
+      startW: '',
+      endB: '',
+      endC: '',
+      endW: '',
       pop: [
         {
-          add: '山东泰山',
+          add: '崂山',
+          href: 'https://baike.baidu.com/item/%E5%B4%82%E5%B1%B1/125288?fr=aladdin'
+        },
+        {
+          add: '栈桥',
+          href: 'https://baike.baidu.com/item/%E9%9D%92%E5%B2%9B%E6%A0%88%E6%A1%A5/1752440?fromtitle=%E6%A0%88%E6%A1%A5&fromid=13828723'
+        },
+        {
+          add: '八大关',
+          href: 'https://baike.baidu.com/item/%E5%85%AB%E5%A4%A7%E5%85%B3/1170054'
+        },
+        {
+          add: '五四广场',
+          href: 'https://baike.baidu.com/item/%E4%BA%94%E5%9B%9B%E5%B9%BF%E5%9C%BA'
+        },
+        {
+          add: '第一海水浴场',
+          href: 'https://baike.baidu.com/item/%E9%9D%92%E5%B2%9B%E7%AC%AC%E4%B8%80%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%9C%BA?fromtitle=%E7%AC%AC%E4%B8%80%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%9C%BA&fromid=2060809'
+        },
+        {
+          add: '奥帆中心',
+          href: 'https://baike.baidu.com/item/%E9%9D%92%E5%B2%9B%E5%9B%BD%E9%99%85%E5%B8%86%E8%88%B9%E4%B8%AD%E5%BF%83/3342320'
+        },
+        {
+          add: '鲁迅公园',
+          href: 'https://baike.baidu.com/item/%E9%B2%81%E8%BF%85%E5%85%AC%E5%9B%AD/30361'
+        },
+        {
+          add: '石老人',
           href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
         },
         {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
+          add: '天幕城',
+          href: 'https://baike.baidu.com/item/%E5%A4%A9%E5%B9%95%E5%9F%8E'
         },
         {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
-        },
-        {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
-        },
-        {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
-        },
-        {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
-        },
-        {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
-        },
-        {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
-        },
-        {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
-        },
-        {
-          add: '山东泰山',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
+          add: '劈柴院',
+          href: 'https://baike.baidu.com/item/%E5%8A%88%E6%9F%B4%E9%99%A2'
         }
+      ],
+      tool: [
+        {
+          fun: '青岛电子地图',
+          href: ''
+        },
+        {
+          fun: '青岛火车时刻表',
+          href: ''
+        },
+        {
+          fun: '青岛汽车时刻表',
+          href: ''
+        },
+        {
+          fun: '青岛公交查询',
+          href: ''
+        },
+        {
+          fun: '青岛天气预报',
+          href: ''
+        }
+      ],
+      books: [
+        {
+          book: '青岛酒店预定',
+          href: '',
+        },
+        {
+          book: '青岛旅游线路',
+          href: '',
+        },
+        {
+          book: '青岛旅行社',
+          href: '',
+        },
+        {
+          book: '青岛订票',
+          href: '',
+        },
+        {
+          book: '青岛定房',
+          href: '',
+        },
+        {
+          book: '青岛租车',
+          href: '',
+        },
+      ],
+      guides: [
+        {
+          guide: '青岛旅游景点',
+          href: ''
+        },
+        {
+          guide: '青岛旅游攻略',
+          href: ''
+        },
+        {
+          guide: '青岛美食',
+          href: ''
+        },
+        {
+          guide: '青岛特产',
+          href: ''
+        },
+        {
+          guide: '青岛风景图片',
+          href: ''
+        },
       ]
     }
   },
   methods: {
+    searchAtt: function() {
+      this.keyword = this.keySearch;
+    },
+    searchBus: function() {
+      this.startB = this.staBus;
+      this.endB = this.endBus;
+    },
+    searchCar: function() {
+      this.startC = this.staCar;
+      this.endC = this.endCar;
+    },
+    searchWalk: function() {
+      this.startW = this.staWalk;
+      this.endW = this.endWalk;
+    },
     fchs: function(n){
       this.search = false;
       this.bus = false;
       this.car = false;
-      this.around = false;
+      this.walk = false;
       switch (n){
         case 0:
           this.search = true;
@@ -107,7 +242,7 @@ export default {
           this.car = true;
           break;
         case 3:
-          this.around = true;
+          this.walk = true;
           break;
       }
     }
@@ -135,7 +270,7 @@ export default {
   background-color: #f4f4f4;
 }
 #stop a {
-  padding-right: 10px;
+  padding-right: 30px;
   color: #555;
   cursor: pointer;
 }
@@ -143,7 +278,30 @@ export default {
   font-weight: bold;
   color: #f91;
 }
+#sfoot input {
+  height: 32px;
+  padding: 0 10px;
+  margin-right: 8px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+#sfoot button {
+  height: 34px;
+  width: 144px;
+  color: #fff;
+  line-height: 32px;
+  margin-top: 10px;
+  border: 1px solid #f91;
+  border-radius: 3px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #f91;
+}
+#sfoot span {
+  font-size: 14px;
+}
 .com {
+  overflow: auto;
   margin-bottom: 20px;
   border: 1px solid #ddd;
 }
@@ -153,17 +311,22 @@ export default {
   background-color: #f4f4f4;
 }
 .com a{
+  width: 100px;
   display: inline-block;
-  margin: 15px;
+  margin: 7px 8px;
   font-size: 14px;
   color: #555;
   cursor: pointer;
   text-decoration: none;
 }
-.bm-view {
+.map {
   width: 688px;
   height: 500px;
   padding: 20px;
+}
+.aside {
+  width: 250px;
+  float: right;
 }
 
 </style>
