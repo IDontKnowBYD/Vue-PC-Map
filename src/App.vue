@@ -69,9 +69,6 @@
         </baidu-map>
       </div>
     </div>
-    <div class="aside">
-
-    </div>
   </div>
 </template>
 <script>
