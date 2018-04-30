@@ -9,6 +9,7 @@ module.exports = merge(webpackBaseConfig, {
     publicPath: '/docs/',
     filename: '[name].[hash].js'
   },
+  devtool:'#source-map',
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
@@ -24,6 +25,9 @@ module.exports = merge(webpackBaseConfig, {
       filenmame: '../index_prod.html',
       template: './index.ejs',
       inject: false
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
     })
   ]
 })
