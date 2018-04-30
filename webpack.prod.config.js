@@ -5,7 +5,7 @@ const webpackBaseConfig = require('./webpack.config')
 
 module.exports = merge(webpackBaseConfig, {
   output: {
-    publicPath: '/docs/',
+    publicPath: '/Vue-PC-Map/',
     filename: '[name].[hash].js'
   },
   devtool:'#source-map',
