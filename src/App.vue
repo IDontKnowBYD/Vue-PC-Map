@@ -57,11 +57,16 @@
       </div>
       <div class="com">
         <p class="title">青岛旅游地图</p>
-        <baidu-map center="青岛" mapType="BMAP_HYBRID_MAP">
+        <baidu-map center="青岛" mapType="BMAP_HYBRID_MAP" @ready="setDistanceToolInstance">
           <bm-view class="map"></bm-view>
-          <bm-scale anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-scale>
+          <bm-scale ></bm-scale>
           <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
           <bm-panorama></bm-panorama>
+          <bm-overview-map anchor="BMAP_ANCHOR_TOP_RIGHT" :isOpen="false" ></bm-overview-map>
+          <bm-control anchor="BMAP_ANCHOR_BOTTOM_RIGHT" >
+            <button @click="openDistanceTool">测距离</button>
+            <button >测面积</button>
+          </bm-control>
           <bm-local-search v-if="search" :keyword="keyword" :auto-viewport="true"></bm-local-search>
           <bm-transit v-if="bus" :start="startB" :end="endB" :auto-viewport="true" :selectFirstResult="true"></bm-transit>
           <bm-driving v-if="car" :start="startC" :end="endC" startCity="青岛" endCity="青岛" :auto-viewport="true" :selectFirstResult="true"></bm-driving></bm-driving>
@@ -72,6 +77,8 @@
   </div>
 </template>
 <script>
+import DistanceTool from 'bmaplib.distancetool'
+
 export default {
   data () {
     return {
@@ -142,70 +149,73 @@ export default {
         },
         {
           fun: '青岛火车时刻表',
-          href: ''
+          href: 'http://huoche.cncn.com/train-%C7%E0%B5%BA'
         },
         {
           fun: '青岛汽车时刻表',
-          href: ''
+          href: 'http://qiche.cncn.com/changtu-%C7%E0%B5%BA'
         },
         {
           fun: '青岛公交查询',
-          href: ''
+          href: 'http://bus.cncn.com/qingdao'
         },
         {
           fun: '青岛天气预报',
-          href: ''
+          href: 'http://tianqi.cncn.com/qingdao'
         }
       ],
       books: [
         {
           book: '青岛酒店预定',
-          href: '',
+          href: 'http://jiudian.cncn.com/qingdao',
         },
         {
           book: '青岛旅游线路',
-          href: '',
+          href: 'http://qingdao.cncn.com/xianlu/',
         },
         {
           book: '青岛旅行社',
-          href: '',
+          href: 'http://qingdao.cncn.com/lvxingshe/',
         },
         {
           book: '青岛订票',
-          href: '',
+          href: 'http://qingdao.cncn.com/dingpiao/',
         },
         {
           book: '青岛定房',
-          href: '',
+          href: 'http://qingdao.cncn.com/dingfang/',
         },
         {
           book: '青岛租车',
-          href: '',
+          href: 'http://qingdao.cncn.com/zuche/',
         },
       ],
       guides: [
         {
           guide: '青岛旅游景点',
-          href: ''
+          href: 'http://qingdao.cncn.com/jingdian/'
         },
         {
           guide: '青岛旅游攻略',
-          href: ''
+          href: 'http://qingdao.cncn.com/lvyougonglue/'
         },
         {
           guide: '青岛美食',
-          href: ''
+          href: 'http://qingdao.cncn.com/meishi/'
         },
         {
           guide: '青岛特产',
-          href: ''
+          href: 'http://qingdao.cncn.com/techan/'
         },
         {
           guide: '青岛风景图片',
-          href: ''
+          href: 'http://qingdao.cncn.com/photo/'
         },
       ]
     }
+  },
+  unmount () {
+    distanceTool && distanceTool.close()
   },
   methods: {
     searchAtt: function() {
@@ -242,6 +252,13 @@ export default {
           this.walk = true;
           break;
       }
+    },
+    setDistanceToolInstance ({map}) {
+      this.distanceTool = new DistanceTool(map, {lineStroke : 2}) 
+    },
+    openDistanceTool (e) {
+      const {distanceTool} = this
+      distanceTool && distanceTool.open()
     }
   }
 }
