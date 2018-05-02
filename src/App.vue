@@ -65,7 +65,7 @@
           <bm-overview-map anchor="BMAP_ANCHOR_TOP_RIGHT" :isOpen="false" ></bm-overview-map>
           <bm-control anchor="BMAP_ANCHOR_BOTTOM_RIGHT" >
             <button @click="openDistanceTool">测距离</button>
-            <button >测面积</button>
+            <button @click="measureArea">测面积</button>
           </bm-control>
           <bm-local-search v-if="search" :keyword="keyword" :auto-viewport="true"></bm-local-search>
           <bm-transit v-if="bus" :start="startB" :end="endB" :auto-viewport="true" :selectFirstResult="true"></bm-transit>
@@ -76,9 +76,10 @@
     </div>
   </div>
 </template>
+
 <script>
 import DistanceTool from 'bmaplib.distancetool'
-
+import './static/js/AreaTool_min'
 export default {
   data () {
     return {
@@ -216,6 +217,7 @@ export default {
   },
   unmount () {
     distanceTool && distanceTool.close()
+    measureAreaTool && measureAreaTool.close()
   },
   methods: {
     searchAtt: function() {
@@ -255,10 +257,15 @@ export default {
     },
     setDistanceToolInstance ({map}) {
       this.distanceTool = new DistanceTool(map, {lineStroke : 2}) 
+      this.measureAreaTool = createMeasureAreaTool(map)
     },
     openDistanceTool (e) {
       const {distanceTool} = this
       distanceTool && distanceTool.open()
+    },
+    measureArea (e) {
+      const {measureAreaTool} = this
+      measureAreaTool && measureAreaTool.open();
     }
   }
 }
