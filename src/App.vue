@@ -59,18 +59,38 @@
         <p class="title">青岛旅游地图</p>
         <baidu-map center="青岛" mapType="BMAP_HYBRID_MAP" @ready="setDistanceToolInstance">
           <bm-view class="map"></bm-view>
-          <bm-scale ></bm-scale>
-          <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT"></bm-navigation>
-          <bm-panorama></bm-panorama>
-          <bm-overview-map anchor="BMAP_ANCHOR_TOP_RIGHT" :isOpen="false" ></bm-overview-map>
-          <bm-control anchor="BMAP_ANCHOR_BOTTOM_RIGHT" >
+          <bm-scale :offset="{width: 95, height: 20}"></bm-scale>
+          <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT" :offset="{width: 12, height: 70}"></bm-navigation>
+          <bm-panorama anchor="BMAP_ANCHOR_TOP_LEFT"></bm-panorama>
+          <bm-overview-map anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :isOpen="true" ></bm-overview-map>
+           <bm-traffic v-if="traffic" :predictDate="{weekday: weekday, hour: hours}"></bm-traffic>
+          <bm-control anchor="BMAP_ANCHOR_TOP_RIGHT" :offset="{width: 7, height: 7}">
             <button @click="openDistanceTool">测距离</button>
             <button @click="measureArea">测面积</button>
+            <button @click="trafficTool">交通图</button>
+            <button @click="interestTool">兴趣点</button>
           </bm-control>
           <bm-local-search v-if="search" :keyword="keyword" :auto-viewport="true"></bm-local-search>
           <bm-transit v-if="bus" :start="startB" :end="endB" :auto-viewport="true" :selectFirstResult="true"></bm-transit>
           <bm-driving v-if="car" :start="startC" :end="endC" startCity="青岛" endCity="青岛" :auto-viewport="true" :selectFirstResult="true"></bm-driving></bm-driving>
           <bm-walking v-if="walk" :start="startW" :end="endW" :auto-viewport="true" :selectFirstResult="true"></bm-walking>
+          <div v-if="interest">
+            <bm-marker :position="{lng: 120.601677, lat: 36.195942}" :dragging="true">
+              <bm-label content="崂山" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -3, height: 30}"/>
+            </bm-marker>
+            <bm-marker :position="{lng: 120.32659, lat: 36.065436}" :dragging="true">
+              <bm-label content="栈桥" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -3, height: 30}"/>
+            </bm-marker>
+            <bm-marker :position="{lng: 120.505219, lat: 36.101068}" :dragging="true">
+              <bm-label content="石老人" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -10, height: 30}"/>
+            </bm-marker>
+            <bm-marker :position="{lng: 120.391662, lat: 36.067567}" :dragging="true">
+              <bm-label content="五四广场" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -15, height: 30}"/>
+            </bm-marker>
+            <bm-marker :position="{lng: 120.509449, lat: 36.206037}" :dragging="true">
+              <bm-label content="世园会" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -10, height: 30}"/>
+            </bm-marker>
+          </div>
         </baidu-map>
       </div>
     </div>
@@ -83,10 +103,13 @@ import './static/js/AreaTool_min'
 export default {
   data () {
     return {
+      week: '7123456',
       search: true,
       bus: false,
       car: false,
       walk: false,
+      traffic: false,
+      interest: false,
       keySearch: '',
       keyword: '',
       staBus: '',
@@ -215,6 +238,14 @@ export default {
       ]
     }
   },
+  computed: {
+    weekday: function () {
+      return this.week.charAt(new Date().getDay())
+    },
+    hours: function () {
+      return new Date().getHours()
+    }
+  },
   unmount () {
     distanceTool && distanceTool.close()
     measureAreaTool && measureAreaTool.close()
@@ -266,6 +297,12 @@ export default {
     measureArea (e) {
       const {measureAreaTool} = this
       measureAreaTool && measureAreaTool.open();
+    },
+    trafficTool () {
+      this.traffic = !this.traffic;
+    },
+    interestTool () {
+       this.interest = !this.interest;
     }
   }
 }
