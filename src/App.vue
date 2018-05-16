@@ -74,20 +74,46 @@
           <bm-transit v-if="bus" :start="startB" :end="endB" :auto-viewport="true" :selectFirstResult="true"></bm-transit>
           <bm-driving v-if="car" :start="startC" :end="endC" startCity="青岛" endCity="青岛" :auto-viewport="true" :selectFirstResult="true"></bm-driving></bm-driving>
           <bm-walking v-if="walk" :start="startW" :end="endW" :auto-viewport="true" :selectFirstResult="true"></bm-walking>
+          <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_LEFT" :showAddressBar="true" :autoLocation="true"></bm-geolocation>
           <div v-if="interest">
-            <bm-marker :position="{lng: 120.601677, lat: 36.195942}" :dragging="true">
+            <bm-info-window :position="{lng: 120.601677, lat: 36.195942}" title="介绍" :show="infoWindowL.show" @close="infoWindowClose(infoWindowL)" @open="infoWindowOpen(infoWindowL)">
+              <p v-text="infoWindowL.contents"></p>
+              <button @click="gothere('崂山')">到这去</button>
+              <a href="https://baike.baidu.com/item/%E5%B4%82%E5%B1%B1/125288?fr=aladdin">详情</a>
+            </bm-info-window>
+            <bm-marker :position="{lng: 120.601677, lat: 36.195942}" :dragging="true" @click="infoWindowOpen(infoWindowL)">
               <bm-label content="崂山" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -3, height: 30}"/>
             </bm-marker>
-            <bm-marker :position="{lng: 120.32659, lat: 36.065436}" :dragging="true">
+            <bm-info-window :position="{lng: 120.32659, lat: 36.065436}" title="介绍" :show="infoWindowZ.show" @close="infoWindowClose(infoWindowZ)" @open="infoWindowOpen(infoWindowZ)">
+              <p v-text="infoWindowZ.contents"></p>
+              <button @click="gothere('栈桥')">到这去</button>
+              <a href="https://baike.baidu.com/item/%E9%9D%92%E5%B2%9B%E6%A0%88%E6%A1%A5/1752440?fromtitle=%E6%A0%88%E6%A1%A5&fromid=13828723">详情</a>
+            </bm-info-window>
+            <bm-marker :position="{lng: 120.32659, lat: 36.065436}" :dragging="true" @click="infoWindowOpen(infoWindowZ)">
               <bm-label content="栈桥" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -3, height: 30}"/>
             </bm-marker>
-            <bm-marker :position="{lng: 120.505219, lat: 36.101068}" :dragging="true">
+            <bm-info-window :position="{lng: 120.505219, lat: 36.101068}" title="介绍" :show="infoWindowS.show" @close="infoWindowClose(infoWindowS)" @open="infoWindowOpen(infoWindowS)">
+              <p v-text="infoWindowS.contents"></p>
+              <button @click="gothere('石老人')">到这去</button>
+              <a href="https://baike.baidu.com/item/%E7%9F%B3%E8%80%81%E4%BA%BA/1019038?fr=aladdin">详情</a>
+            </bm-info-window>
+            <bm-marker :position="{lng: 120.505219, lat: 36.101068}" :dragging="true" @click="infoWindowOpen(infoWindowS)">
               <bm-label content="石老人" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -10, height: 30}"/>
             </bm-marker>
-            <bm-marker :position="{lng: 120.391662, lat: 36.067567}" :dragging="true">
+            <bm-info-window :position="{lng: 120.391662, lat: 36.067567}" title="介绍" :show="infoWindowW.show" @close="infoWindowClose(infoWindowW)" @open="infoWindowOpen(infoWindowW)">
+              <p v-text="infoWindowW.contents"></p>
+              <button @click="gothere('五四广场')">到这去</button>
+              <a href="https://baike.baidu.com/item/%E4%BA%94%E5%9B%9B%E5%B9%BF%E5%9C%BA">详情</a>
+            </bm-info-window>
+            <bm-marker :position="{lng: 120.391662, lat: 36.067567}" :dragging="true" @click="infoWindowOpen(infoWindowW)">
               <bm-label content="五四广场" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -15, height: 30}"/>
             </bm-marker>
-            <bm-marker :position="{lng: 120.509449, lat: 36.206037}" :dragging="true">
+            <bm-info-window :position="{lng: 120.509449, lat: 36.206037}" title="介绍" :show="infoWindowY.show" @close="infoWindowClose(infoWindowY)" @open="infoWindowOpen(infoWindowY)">
+              <p v-text="infoWindowY.contents"></p>
+              <button @click="gothere('世园会')">到这去</button>
+              <a href="https://baike.baidu.com/item/%E4%B8%AD%E5%9B%BD2014%E5%B9%B4%E9%9D%92%E5%B2%9B%E4%B8%96%E7%95%8C%E5%9B%AD%E8%89%BA%E5%8D%9A%E8%A7%88%E4%BC%9A?fromtitle=%E9%9D%92%E5%B2%9B%E4%B8%96%E5%9B%AD%E4%BC%9A&fromid=7947987">详情</a>
+            </bm-info-window>
+            <bm-marker :position="{lng: 120.509449, lat: 36.206037}" :dragging="true" @click="infoWindowOpen(infoWindowY)">
               <bm-label content="世园会" :labelStyle="{color: 'red', fontSize : '10px'}" :offset="{width: -10, height: 30}"/>
             </bm-marker>
           </div>
@@ -155,7 +181,7 @@ export default {
         },
         {
           add: '石老人',
-          href: 'https://baike.baidu.com/item/%E6%B3%B0%E5%B1%B1/5447?fr=aladdin'
+          href: 'https://baike.baidu.com/item/%E7%9F%B3%E8%80%81%E4%BA%BA/1019038?fr=aladdin'
         },
         {
           add: '天幕城',
@@ -235,7 +261,27 @@ export default {
           guide: '青岛风景图片',
           href: 'http://qingdao.cncn.com/photo/'
         },
-      ]
+      ],
+      infoWindowL: {
+        show: false,
+        contents: '崂山，国务院首批国家级重点风景名胜区。'
+      },
+      infoWindowZ: {
+        show: false,
+        contents: '栈桥，青岛海滨风景区。'
+      },
+      infoWindowS: {
+        show: false,
+        contents: '石老人，国家旅游度假区。'
+      },
+      infoWindowW: {
+        show: false,
+        contents: '五四广场，标志性雕塑“五月的风”'
+      },
+      infoWindowY: {
+        show: false,
+        contents: '世园会，世界园艺博览会'
+      }
     }
   },
   computed: {
@@ -303,6 +349,16 @@ export default {
     },
     interestTool () {
        this.interest = !this.interest;
+    },
+    infoWindowClose (infoWindow) {
+      infoWindow.show = false
+    },
+    infoWindowOpen (infoWindow) {
+      infoWindow.show = true
+    },
+    gothere (str) {
+      this.fchs(1);
+      this.endBus = str;
     }
   }
 }
