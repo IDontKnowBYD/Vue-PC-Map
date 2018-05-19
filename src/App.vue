@@ -69,7 +69,7 @@
             <button @click="measureArea">测面积</button>
             <button @click="trafficTool">交通图</button>
             <button @click="interestTool">兴趣点</button>
-            <button><a href="/src/test.html">瓦片图</a></button>
+            <button><a href="src/test.html">瓦片图</a></button>
           </bm-control>
           <bm-local-search v-if="search" :keyword="keyword" :auto-viewport="true"></bm-local-search>
           <bm-transit v-if="bus" :start="startB" :end="endB" :auto-viewport="true" :selectFirstResult="true"></bm-transit>
